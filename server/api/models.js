@@ -1,0 +1,34 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const IdeaSchema = new Schema({
+    title: String,
+    client : String,
+})
+
+const DevSchema = new Schema({
+    uid : String,
+    name : String,
+    github : String,
+    applied_jobs : Array,
+    working_jobs : Array
+})
+
+const ClientSchema = new Schema({
+    uid : String,
+    name : String,
+})
+
+const MessageSchema =  new Schema({
+    message: String,
+    senderId: ID,
+    receiverId: ID,
+    timestamp: Number
+  });
+
+Idea = mongoose.model('Idea', IdeaSchema)
+Dev = mongoose.model('Dev', DevSchema)
+Client = mongoose.model('Client', ClientSchema)
+Message = mongoose.model('Message', MessageSchema)
+
+module.exports = { Idea, Dev, Client, Message };
