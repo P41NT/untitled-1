@@ -109,7 +109,8 @@ const resolvers = {
             await userText.save();
             pubsub.publish("newMessage", {
               newMessage: userText,
-              uid: receiverID
+              receiverID: receiverID,
+              senderID : senderID
             });
             return userText;
         },
@@ -119,7 +120,7 @@ const resolvers = {
             subscribe: withFilter(
               () => pubsub.asyncIterator("newMessage"),
               (payload, variables) => {
-                return payload.uid == variables.uid;
+                return payload.uid == variables.receiverID || payload.uid == variables.senderID ;
               }
             )
         }
