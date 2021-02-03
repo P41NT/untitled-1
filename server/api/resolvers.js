@@ -74,12 +74,14 @@ const resolvers = {
         },
         addClient : async (parent, args, ctx, info) => {
             let client = new Client({
+                uid : args.uid,
                 name : args.name,
             });
             return await client.save();
         },
         addDev : (parent, args, ctx, info) => {
             let dev = new Dev({
+                uid : args.uid,
                 name: args.name,
                 github: args.github
             });
@@ -97,23 +99,30 @@ const resolvers = {
         fireDev : (parent, args, ctx, info) => {
             return Dev.findByIdAndUpdate(args.dev,{$pull : {working_jobs : args.idea}}, {new : true});
         },
-        // createMessage: async (
-        //     parent,
-        //     { senderID, receiverID, message, timestamp }
-        //   ) => {
-        //     const userText = new Message({
-        //       senderID,
-        //       receiverID,
-        //       message,
-        //       timestamp
-        //     });
-        //     await userText.save();
-        //     pubsub.publish("newMessage", {
-        //       newMessage: userText,
-        //       receiverID: receiverID
-        //     });
-        //     return userText;
-        //   },
+        createMessage: async (parent,{ senderID, receiverID, message, timestamp }) => {
+            const userText = new Message({
+              senderID,
+              receiverID,
+              message,
+              timestamp
+            });
+            await userText.save();
+            pubsub.publish("newMessage", {
+              newMessage: userText,
+              uid: receiverID
+            });
+            return userText;
+        },
+    }, 
+    Subscription : {
+        newMessage: {
+            subscribe: withFilter(
+              () => pubsub.asyncIterator("newMessage"),
+              (payload, variables) => {
+                return payload.uid == variables.uid;
+              }
+            )
+        }
     }
 }
 const pubsub = new PubSub();

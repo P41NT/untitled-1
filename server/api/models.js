@@ -21,8 +21,8 @@ const ClientSchema = new Schema({
 
 const MessageSchema =  new Schema({
     message: String,
-    senderId: ID,
-    receiverId: ID,
+    senderId: String,
+    receiverId: String,
     timestamp: Number
   });
 
