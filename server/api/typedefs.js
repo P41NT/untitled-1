@@ -46,12 +46,3 @@ const typedefs = `
     }
 `
 module.exports = typedefs;
-
-
-// type Message {
-//     id: ID!
-//     message: String!
-//     senderID: ID!
-//     receiverId: ID!
-//     timestamp: Float!
-// }

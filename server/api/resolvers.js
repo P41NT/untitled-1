@@ -97,23 +97,6 @@ const resolvers = {
         fireDev : (parent, args, ctx, info) => {
             return Dev.findByIdAndUpdate(args.dev,{$pull : {working_jobs : args.idea}}, {new : true});
         },
-        // createMessage: async (
-        //     parent,
-        //     { senderID, receiverID, message, timestamp }
-        //   ) => {
-        //     const userText = new Message({
-        //       senderID,
-        //       receiverID,
-        //       message,
-        //       timestamp
-        //     });
-        //     await userText.save();
-        //     pubsub.publish("newMessage", {
-        //       newMessage: userText,
-        //       receiverID: receiverID
-        //     });
-        //     return userText;
-        //   },
     }
 }
 const pubsub = new PubSub();
