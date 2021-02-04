@@ -1,6 +1,8 @@
 const { PubSub, withFilter } = require("graphql-yoga");
 const { Idea, Client, Dev, Message } = require('./models')
 
+const bcrypt = require('bcrypt');
+
 const resolvers = {
     IdeaType : {
         client : (parent, args, ctx, info) => {

@@ -10,6 +10,7 @@ const typedefs = `
         id : ID!
         uid : ID!
         name : String!
+        email: String!
         ideas : [IdeaType]
     }
     type DevType{
@@ -19,6 +20,10 @@ const typedefs = `
         github : String
         applied_jobs : [IdeaType]
         working_jobs : [IdeaType]
+    }
+    ClientAuthPayload {
+        token : String
+        user : ClientType
     }
     type Query{
         idea(id : ID!): IdeaType
@@ -32,7 +37,7 @@ const typedefs = `
     type Mutation{
         addIdeas(title : String!, client : ID!): IdeaType
         removeIdeas(id : ID!): IdeaType
-        addClient(name : String!): ClientType
+        addClient(name : String!, password : String!, email : String!): ClientAuthPayload
         addDev(name : String!, github : String): DevType
         removeDev(id : ID!): DevType
         applyJob(idea : ID!, dev : ID!): DevType
@@ -40,6 +45,7 @@ const typedefs = `
         fireDev(idea : ID!, dev: ID!): DevType
 
         createMessage(senderID: ID! receiverID: ID! message: String! timestamp: Float!): Message!
+        clientLogin(email: String!, password: String!): ClientAuthPayload
     }
     type Subscriptions{
         newMessage(recieverId = ID!) : Message
