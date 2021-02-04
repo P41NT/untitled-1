@@ -17,12 +17,14 @@ const DevSchema = new Schema({
 const ClientSchema = new Schema({
     uid : String,
     name : String,
+    email : String,
+    password : String
 })
 
 const MessageSchema =  new Schema({
     message: String,
-    senderId: ID,
-    receiverId: ID,
+    senderId: String,
+    receiverId: String,
     timestamp: Number
   });
 

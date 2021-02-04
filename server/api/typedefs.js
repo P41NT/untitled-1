@@ -11,6 +11,7 @@ const typedefs = `
         uid : ID!
         name : String!
         email: String!
+        password : String!
         ideas : [IdeaType]
     }
     type DevType{
@@ -21,7 +22,7 @@ const typedefs = `
         applied_jobs : [IdeaType]
         working_jobs : [IdeaType]
     }
-    ClientAuthPayload {
+    type ClientAuthPayload {
         token : String
         user : ClientType
     }
@@ -32,23 +33,22 @@ const typedefs = `
         ideas : [IdeaType]
         clients : [ClientType]
         devs : [DevType]
-        messages(uid:ID!) : [Message]
+    }
+    type ClientTypePayload{
+        token : String!
+        client : ClientType
     }
     type Mutation{
         addIdeas(title : String!, client : ID!): IdeaType
         removeIdeas(id : ID!): IdeaType
-        addClient(name : String!, password : String!, email : String!): ClientAuthPayload
+        addClient(name : String!, password : String!, email : String!): ClientTypePayload
         addDev(name : String!, github : String): DevType
         removeDev(id : ID!): DevType
         applyJob(idea : ID!, dev : ID!): DevType
         acceptDev(idea : ID!, dev : ID!): DevType
         fireDev(idea : ID!, dev: ID!): DevType
 
-        createMessage(senderID: ID! receiverID: ID! message: String! timestamp: Float!): Message!
-        clientLogin(email: String!, password: String!): ClientAuthPayload
-    }
-    type Subscriptions{
-        newMessage(recieverId = ID!) : Message
+        clientLogin(email: String!, password: String!): ClientTypePayload
     }
 `
 module.exports = typedefs;

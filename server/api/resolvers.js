@@ -2,6 +2,9 @@ const { PubSub, withFilter } = require("graphql-yoga");
 const { Idea, Client, Dev, Message } = require('./models')
 
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
+const {secret} = require('../auth/utils');
+const jwt = require('jsonwebtoken');
 
 const resolvers = {
     IdeaType : {
@@ -49,16 +52,16 @@ const resolvers = {
         ideas : (parent, args, ctx, info) => {
             return Idea.find({});
         },
-        clients : (parent, args, ctx, info) => {
+        clients : async (parent, args, ctx, info) => {
             return Client.find({});
         },
         devs : (parent, args, ctx, info) => {
             return Dev.find({});
         },
-        messages : (parent, args, ctx, info) =>{
-            uid = args.uid;
-            return Message.find({$or : [{recieverId : uid}, {senderId: uid}]})
-        }
+        // messages : (parent, args, ctx, info) =>{
+        //     uid = args.uid;
+        //     return Message.find({$or : [{recieverId : uid}, {senderId: uid}]})
+        // }
     },
     Mutation : {
         addIdeas : (parent, args, ctx, info) => {
@@ -75,10 +78,20 @@ const resolvers = {
             return Idea.findByIdAndDelete(args.id);
         },
         addClient : async (parent, args, ctx, info) => {
+            const password = await bcrypt.hash(args.password, 10);
+            const result = await Client.findOne({ email: args.email }).select("email").lean();
+            if (result) {
+                throw new Error("Account with E-Mail exists.")
+            }
             let client = new Client({
                 name : args.name,
+                uid : uuidv4(),
+                email : args.email,
+                password: password
             });
-            return await client.save();
+            const user =  await client.save();
+            const token = jwt.sign({userId : user.uid}, secret);
+            return {client:user, token : token};
         },
         addDev : (parent, args, ctx, info) => {
             let dev = new Dev({
@@ -99,6 +112,15 @@ const resolvers = {
         fireDev : (parent, args, ctx, info) => {
             return Dev.findByIdAndUpdate(args.dev,{$pull : {working_jobs : args.idea}}, {new : true});
         },
+        clientLogin : async (parent, args, ctx, info) => {
+            const client = await Client.findOne({email : args.email});
+            if(!client) throw new Error("Invalid User");
+            const valid = await bcrypt.compare(args.password, client.password);
+            if(!valid) throw new Error("Invalid password");
+            const token = await jwt.sign({userId:client.uid}, secret)
+            client_payload = {token : token, client : client}
+            return {token, client}
+        }
     }
 }
 const pubsub = new PubSub();
