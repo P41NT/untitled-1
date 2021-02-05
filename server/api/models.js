@@ -10,6 +10,8 @@ const DevSchema = new Schema({
     uid : String,
     name : String,
     github : String,
+    email : String,
+    password : String,
     applied_jobs : Array,
     working_jobs : Array
 })

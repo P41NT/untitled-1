@@ -93,12 +93,21 @@ const resolvers = {
             const token = jwt.sign({userId : user.uid}, secret);
             return {client:user, token : token};
         },
-        addDev : (parent, args, ctx, info) => {
+        addDev : async (parent, args, ctx, info) => {
+            const password = await bcrypt.hash(args.password, 10);
+            const result = await Dev.findOne({ email: args.email }).select("email").lean();
+            if (result) {
+                throw new Error("Account with E-Mail exists.")
+            }
             let dev = new Dev({
-                name: args.name,
-                github: args.github
+                name : args.name,
+                uid : uuidv4(),
+                email : args.email,
+                password: password
             });
-            return dev.save();
+            const user =  await dev.save();
+            const token = jwt.sign({userId : user.uid}, secret);
+            return {dev:user, token : token};
         },
         removeDev : (parent, args, ctx, info) => {
             return Dev.findByIdAndDelete(args.id);
@@ -120,6 +129,15 @@ const resolvers = {
             const token = await jwt.sign({userId:client.uid}, secret)
             client_payload = {token : token, client : client}
             return {token, client}
+        },
+        devLogin : async (parent, args, ctx, info) => {
+            const client = await Dev.findOne({email : args.email});
+            if(!dev) throw new Error("Invalid User");
+            const valid = await bcrypt.compare(args.password, dev.password);
+            if(!valid) throw new Error("Invalid password");
+            const token = await jwt.sign({userId:dev.uid}, secret)
+            dev_payload = {token : token, dev : dev}
+            return {token, dev}
         }
     }
 }

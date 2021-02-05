@@ -18,13 +18,15 @@ const typedefs = `
         id : ID!
         uid : ID!
         name : String!
+        email: String!
+        password : String!
         github : String
         applied_jobs : [IdeaType]
         working_jobs : [IdeaType]
     }
-    type ClientAuthPayload {
+    typr DevTypePayload {
         token : String
-        user : ClientType
+        user : DevType
     }
     type Query{
         idea(id : ID!): IdeaType
@@ -47,7 +49,7 @@ const typedefs = `
         applyJob(idea : ID!, dev : ID!): DevType
         acceptDev(idea : ID!, dev : ID!): DevType
         fireDev(idea : ID!, dev: ID!): DevType
-
+        devLogin(email: String!, password: String!): DevTypePayload
         clientLogin(email: String!, password: String!): ClientTypePayload
     }
 `
