@@ -69,6 +69,9 @@ const resolvers = {
                 title : args.title,
                 client : args.client,
             });
+            const { userId } = ctx
+            console.log(userId)
+            console.log(args.client.uid);
             saved = idea.save();
             console.log("added data...")
             console.log(saved);

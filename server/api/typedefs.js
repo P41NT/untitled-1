@@ -24,7 +24,7 @@ const typedefs = `
         applied_jobs : [IdeaType]
         working_jobs : [IdeaType]
     }
-    typr DevTypePayload {
+    type DevTypePayload {
         token : String
         user : DevType
     }
