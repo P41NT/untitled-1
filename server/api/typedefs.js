@@ -1,4 +1,11 @@
 const typedefs = `
+    type Message {
+        id: ID!
+        message: String!
+        senderID: ID!
+        receiverId: ID!
+        timestamp: Float!
+    }
     type IdeaType{
         id: ID!
         title : String!
@@ -32,8 +39,8 @@ const typedefs = `
     type Mutation{
         addIdeas(title : String!, client : ID!): IdeaType
         removeIdeas(id : ID!): IdeaType
-        addClient(name : String!): ClientType
-        addDev(name : String!, github : String): DevType
+        addClient(name : String!, uid : ID!): ClientType
+        addDev(name : String!, github : String, uid:ID!): DevType
         removeDev(id : ID!): DevType
         applyJob(idea : ID!, dev : ID!): DevType
         acceptDev(idea : ID!, dev : ID!): DevType
@@ -41,17 +48,8 @@ const typedefs = `
 
         createMessage(senderID: ID! receiverID: ID! message: String! timestamp: Float!): Message!
     }
-    type Subscriptions{
-        newMessage(recieverId = ID!) : Message
+    type Subscription{
+        newMessage(uid : ID!) : Message
     }
 `
 module.exports = typedefs;
-
-
-// type Message {
-//     id: ID!
-//     message: String!
-//     senderID: ID!
-//     receiverId: ID!
-//     timestamp: Float!
-// }
