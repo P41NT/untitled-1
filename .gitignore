@@ -4997,3 +4997,5 @@ server/node_modules/graphql-yoga/dist/lambda.js.map
 server/node_modules/graphql-yoga/dist/types.d.ts
 server/node_modules/graphql-yoga/dist/types.js
 server/node_modules/graphql-yoga/dist/types.js.map
+**node_modules
+server /node_modules
