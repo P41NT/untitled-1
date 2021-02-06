@@ -65,10 +65,12 @@ const resolvers = {
     },
     Mutation : {
         addIdeas : (parent, args, ctx, info) => {
+            const { userId } = ctx;
             let idea = new Idea({
                 title : args.title,
-                client : args.client,
+                client : userId,
             });
+            console.log(userId, args.id);
             saved = idea.save();
             console.log("added data...")
             console.log(saved);
